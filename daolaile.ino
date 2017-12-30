@@ -1,0 +1,83 @@
+int redled =10; //定义数字8 接口
+int yellowled =7; //定义数字7 接口
+int greenled =4; //定义数字4 接口
+int buzzer=8;//蜂鸣器
+int Sensor = 9;//热释传感器
+const int TrigPin = 2; 
+const int EchoPin = 3; 
+float distance; 
+void setup()
+{
+pinMode(redled, OUTPUT);//定义红色小灯接口为输出接口
+pinMode(yellowled, OUTPUT); //定义黄色小灯接口为输出接口
+pinMode(greenled, OUTPUT); //定义绿色小灯接口为输出接口
+pinMode(buzzer,OUTPUT);//定义蜂鸣器接口为输出接口
+ Serial.begin(9600); 
+    pinMode(Sensor, INPUT); ////定义热释传感器接口为输入接口
+    pinMode(TrigPin, OUTPUT); 
+    pinMode(EchoPin, INPUT); 
+    Serial.println("Ultrasonic sensor:");
+}
+void loop()
+{
+        int val = digitalRead(Sensor); // 读取引脚电平
+        unsigned char i,j;
+        digitalWrite(TrigPin, LOW); 
+        delayMicroseconds(2); 
+        digitalWrite(TrigPin, HIGH); 
+        delayMicroseconds(10);
+        digitalWrite(TrigPin, LOW); 
+        distance = pulseIn(EchoPin, HIGH) / 58.00;
+        Serial.print(distance); 
+        Serial.print("cm"); 
+        Serial.println(); //利用超声波传感器计算距离
+        delay(1000); 
+        if (val==1)  // 若检测到有人，则val值为1
+        {
+        if(distance>200)
+        {
+digitalWrite(greenled, HIGH);////点亮 绿灯
+digitalWrite(redled, LOW);//熄灭红灯
+digitalWrite(yellowled, LOW);//熄灭 黄灯
+
+}
+else if((distance>50)&(distance<=200))
+{
+digitalWrite(yellowled, HIGH);//点亮  黄灯
+digitalWrite(greenled, LOW);
+digitalWrite(redled, LOW);
+
+    for(i=0;i<80;i++)//蜂鸣器频率
+    { 
+      digitalWrite(buzzer,HIGH);//发声音
+      delay(10);//延时1ms 
+      digitalWrite(buzzer,LOW);//不发声音
+      delay(10);//延时ms 
+    } 
+   
+} 
+else
+{
+digitalWrite(redled, HIGH);//点亮 红灯
+digitalWrite(greenled, LOW);
+digitalWrite(yellowled, LOW);
+
+    for(i=0;i<80;i++)
+    { 
+      digitalWrite(buzzer,HIGH);//发声音
+      delay(1);//延时1ms 
+      digitalWrite(buzzer,LOW);//不发声音
+      delay(1);//延时ms 
+    }
+    
+}
+
+        }
+        else//没有人的时候灯不亮
+        {
+digitalWrite(redled, LOW);
+digitalWrite(greenled, LOW);
+digitalWrite(yellowled, LOW);
+        }
+}
+
